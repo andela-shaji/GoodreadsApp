@@ -3,15 +3,12 @@ package com.goodreadsapp.books;
 import com.goodreadsapp.api.BooksApi;
 import com.goodreadsapp.model.GoodreadsBook;
 import com.goodreadsapp.model.GoodreadsResponse;
-import com.jakewharton.rxbinding2.InitialValueObservable;
 import io.reactivex.Observable;
+import io.reactivex.schedulers.Schedulers;
 import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
-import plugins.RxJavaSchedulersTestRule;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
@@ -27,12 +24,11 @@ public class BooksPresenterTest {
     @Mock BooksScreen screen;
     @Mock BooksApi booksApi;
 
-    @Rule public RxJavaSchedulersTestRule rxJavaSchedulersTestRule = new RxJavaSchedulersTestRule();
-
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
-        presenter = new BooksPresenter(screen, booksApi);
+        presenter = new BooksPresenter(screen, booksApi, Schedulers.computation(),
+            Schedulers.computation());
     }
 
     @Test

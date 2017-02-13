@@ -16,6 +16,8 @@ import com.goodreadsapp.R;
 import com.goodreadsapp.api.BooksApi;
 import com.goodreadsapp.model.GoodreadsBook;
 import com.jakewharton.rxbinding2.widget.RxTextView;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.schedulers.Schedulers;
 import java.util.Arrays;
 import javax.inject.Inject;
 
@@ -56,7 +58,7 @@ public class BooksView extends LinearLayout implements BooksScreen {
         booksList.setLayoutManager(new LinearLayoutManager(getContext()));
         booksList.setAdapter(booksAdapter);
 
-        presenter = new BooksPresenter(this, api);
+        presenter = new BooksPresenter(this, api, Schedulers.io(), AndroidSchedulers.mainThread());
         presenter.handleSearch(RxTextView.textChanges(searchEt).skipInitialValue());
     }
 

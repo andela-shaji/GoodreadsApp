@@ -3,6 +3,7 @@ package com.goodreadsapp.books;
 import com.goodreadsapp.api.BooksApi;
 import com.goodreadsapp.model.GoodreadsResponse;
 import io.reactivex.Observable;
+import io.reactivex.Scheduler;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.functions.Consumer;
@@ -15,11 +16,15 @@ class BooksPresenter {
 
     private BooksScreen screen;
     private final BooksApi api;
+    private final Scheduler subscribeOn;
+    private final Scheduler observeOn;
     private CompositeDisposable compositeDisposable;
 
-    BooksPresenter(BooksScreen screen, BooksApi api) {
+    BooksPresenter(BooksScreen screen, BooksApi api, Scheduler subscribeOn, Scheduler observeOn) {
         this.screen = screen;
         this.api = api;
+        this.subscribeOn = subscribeOn;
+        this.observeOn = observeOn;
         compositeDisposable = new CompositeDisposable();
     }
 
@@ -36,7 +41,8 @@ class BooksPresenter {
                     return searchByTitle(charSequence.toString());
                 }
             })
-            .observeOn(AndroidSchedulers.mainThread())
+            .subscribeOn(subscribeOn)
+            .observeOn(observeOn)
             .subscribe(new Consumer<GoodreadsResponse>() {
                 @Override
                 public void accept(GoodreadsResponse goodreadsResponse) throws Exception {

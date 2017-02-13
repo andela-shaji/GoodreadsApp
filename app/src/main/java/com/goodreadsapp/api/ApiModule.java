@@ -3,7 +3,6 @@ package com.goodreadsapp.api;
 import com.jakewharton.retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import dagger.Module;
 import dagger.Provides;
-import io.reactivex.schedulers.Schedulers;
 import javax.inject.Singleton;
 import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
@@ -16,22 +15,21 @@ public class ApiModule {
     //TODO: @Suada provide this as a string with a qualifier @Goodreads Url
     private final static String GOODREADS_URL = "https://www.goodreads.com/";
 
-    //Retrofit
     @Provides
     @Singleton
-    Retrofit provideRetrofit(OkHttpClient client) {
+    static Retrofit provideRetrofit(OkHttpClient client) {
         return new Retrofit.Builder()
             .client(client)
             .baseUrl(GOODREADS_URL)
             .addConverterFactory(SimpleXmlConverterFactory.create())
             .addConverterFactory(GsonConverterFactory.create())
-            .addCallAdapterFactory(RxJava2CallAdapterFactory.createWithScheduler(Schedulers.io()))
+            .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
             .build();
     }
 
     @Provides
     @Singleton
-    OkHttpClient provideOkhttpClient(GoodreadsApiInterceptor goodreadsApiInterceptor) {
+    static OkHttpClient provideOkhttpClient(GoodreadsApiInterceptor goodreadsApiInterceptor) {
         return new OkHttpClient()
             .newBuilder()
             .addNetworkInterceptor(goodreadsApiInterceptor)
@@ -40,13 +38,13 @@ public class ApiModule {
 
     @Provides
     @Singleton
-    GoodreadsApiInterceptor provideGoodreadsInterceptor() {
+    static GoodreadsApiInterceptor provideGoodreadsInterceptor() {
         return new GoodreadsApiInterceptor();
     }
 
     @Provides
     @Singleton
-    BooksApi provideBooksApi(Retrofit retrofit) {
+    static BooksApi provideBooksApi(Retrofit retrofit) {
         return retrofit.create(BooksApi.class);
     }
 
